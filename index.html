@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Data-Axe ہنگامی کارڈ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1; /* Indigo */
+            --primary-dark: #4338ca;
+            --accent: #f43f5e; /* Rose */
+            --bg-dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-light: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(244, 63, 94, 0.2) 0%, transparent 40%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            padding-bottom: 80px; /* Space for FAB */
+            overflow-x: hidden;
+        }
+
+        /* Floating Action Button for Admin */
+        .fab-admin {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.5);
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        .fab-admin:active { transform: scale(0.9); }
+
+        /* ID Card Container */
+        .id-card {
+            width: 100%;
+            max-width: 380px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* Hologram Effect */
+        .id-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, transparent, transparent, rgba(255,255,255,0.1), transparent, transparent);
+            animation: hologram 6s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        @keyframes hologram {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card-top {
+            padding: 25px 20px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+            z-index: 2;
+        }
+
+        .school-info h1 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .serial-chip {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #78350f;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 900;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+            font-family: 'Courier New', monospace;
+        }
+
+        .card-content {
+            padding: 25px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Profile Section */
+        .profile-area {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .avatar-container {
+            width: 90px;
+            height: 110px;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            padding: 2px;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+            flex-shrink: 0;
+            overflow: hidden;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .avatar-placeholder {
+            font-size: 40px;
+            color: var(--primary);
+        }
+
+        .student-details {
+            flex: 1;
+        }
+
+        .student-details h2 {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .blood-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(244, 63, 94, 0.2);
+            border: 1px solid rgba(244, 63, 94, 0.5);
+            color: #fda4af;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .blood-badge i { font-size: 10px; color: var(--accent); }
+
+        /* Data Grid */
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .data-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 12px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .data-row i {
+            font-size: 16px;
+            width: 25px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .data-row .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-row .info span {
+            font-size: 9px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .data-row .info strong {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+            direction: ltr;
+            text-align: right;
+        }
+
+        /* Action Buttons */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .act-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 5px;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .act-btn:active { transform: scale(0.95); }
+        
+        .act-btn i { font-size: 18px; margin-bottom: 5px; }
+        .act-btn span { font-size: 10px; font-weight: 500; }
+
+        .act-btn.call { border-color: rgba(244, 63, 94, 0.5); color: #fda4af; }
+        .act-btn.call i { color: var(--accent); }
+        
+        .act-btn.wa { border-color: rgba(37, 211, 102, 0.5); color: #86efac; }
+        .act-btn.wa i { color: #25D366; }
+        
+        .act-btn.loc { border-color: rgba(99, 102, 241, 0.5); color: #a5b4fc; }
+        .act-btn.loc i { color: var(--primary); }
+
+        /* Urdu Info Boxes */
+        .urdu-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            font-family: 'Noto Nastaliq Urdu', serif;
+            text-align: right;
+            margin-bottom: 15px;
+        }
+
+        .urdu-box.teal-box {
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+        }
+
+        .urdu-box h3 {
+            color: #fbbf24;
+            font-size: 18px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .urdu-box.teal-box h3 {
+            color: #2dd4bf;
+        }
+
+        .urdu-box p {
+            color: #fde68a;
+            font-size: 13px;
+            line-height: 2.4;
+            margin-bottom: 8px;
+        }
+
+        .urdu-box.teal-box p {
+            color: #99f6e4;
+        }
+
+        .urdu-box strong { color: #fff; }
+
+        /* Modal System */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-bg.active { display: flex; }
+
+        .modal-box {
+            background: #1e293b;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-head {
+            background: var(--primary-dark);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-head h2 { font-size: 16px; font-weight: 600; }
+        .modal-close { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+
+        .modal-body { padding: 20px; }
+
+        .form-float {
+            margin-bottom: 15px;
+        }
+        .form-float label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .form-float input {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            direction: ltr;
+            text-align: right;
+        }
+        .form-float input:focus { outline: none; border-color: var(--primary); }
+
+        .upload-area {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
+        }
+        .upload-preview {
+            width: 60px; height: 70px; border-radius: 10px; background: #0f172a; border: 1px dashed #334155; display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+        .upload-preview img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .upload-btn { 
+            padding: 10px 15px; background: var(--primary); border: none; color: white; border-radius: 8px; cursor: pointer; font-family: 'Poppins'; font-size: 12px;
+        }
+
+        .save-btn {
+            width: 100%; padding: 14px; background: linear-gradient(to right, var(--accent), #be123c); border: none; color: white; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Poppins'; margin-top: 10px;
+        }
+
+        .pass-form { text-align: center; }
+        .pass-form input { width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; border-radius: 12px; color: white; text-align: center; font-size: 20px; letter-spacing: 8px; margin: 20px 0; font-family: 'Poppins'; }
+        .pass-form button { background: var(--primary); color: white; padding: 12px 30px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: 'Poppins'; width: 100%; }
+        .pass-error { color: var(--accent); font-size: 12px; margin-top: 10px; display: none; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Main Card App -->
+    <div class="id-card">
+        <div class="card-top">
+            <div class="school-info">
+                <h1>Oxford High School</h1>
+            </div>
+            <div class="serial-chip" data-field="serialNo">SN-0000</div>
+        </div>
+
+        <div class="card-content">
+            <!-- Profile Area -->
+            <div class="profile-area">
+                <div class="avatar-container">
+                    <i class="fas fa-user avatar-placeholder" id="avatarIcon"></i>
+                    <img id="avatarImg" src="" alt="">
+                </div>
+                <div class="student-details">
+                    <h2 data-field="studentName">طالب علم</h2>
+                    <div class="blood-badge">
+                        <i class="fas fa-droplet"></i>
+                        <span data-field="bloodGroup">O+</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Grid -->
+            <div class="data-grid">
+                <div class="data-row">
+                    <i class="fas fa-phone-volume"></i>
+                    <div class="info">
+                        <span>Emergency Dialer</span>
+                        <strong data-field="emergencyDialer">0000-0000000</strong>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <i class="fab fa-whatsapp"></i>
+                    <div class="info">
+                        <span>Emergency WhatsApp</span>
+                        <strong data-field="whatsappNo">0000-0000000</strong>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <i class="fas fa-school"></i>
+                    <div class="info">
+                        <span>School Address</span>
+                        <strong data-field="schoolAddress">پتہ درج کریں</strong>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <i class="fas fa-phone-flip"></i>
+                    <div class="info">
+                        <span>School Number</span>
+                        <strong data-field="schoolNo">0000-0000000</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="action-grid">
+                <button class="act-btn call" onclick="makeCall()">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Call</span>
+                </button>
+                <button class="act-btn wa" onclick="sendWhatsApp()">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </button>
+                <button class="act-btn loc" onclick="sendLocation()">
+                    <i class="fas fa-location-dot"></i>
+                    <span>Location</span>
+                </button>
+            </div>
+
+            <!-- Urdu Instructions Box -->
+            <div class="urdu-box">
+                <h3>ہنگامی کارڈ کے استعمال کا طریقہ</h3>
+                <p><strong>بچے کی حفاظت کے لیے:</strong> یہ کارڈ اسکول کے اوقات یا سفر کے دوران بچے کی شناخت اور حفاظت کا ضامن ہے۔</p>
+                <p><strong>سیریل نمبر کا مقصد:</strong> اس کارڈ کا Serial Number محفوظ ڈیجیٹل سسٹم (Data-Axe) سے جڑا ہوا ہے۔ کسی بھی ہنگامی ضرورت کے وقت اس نمبر سے بچے کی اہم معلومات حاصل کی جا سکتی ہیں۔</p>
+                <p><strong>والدین کے لیے نوٹ:</strong> اگر آپ کا فون نمبر یا گھر کا پتہ تبدیل ہو جائے، تو اسکول انتظامیہ کو فوراً مطلع کریں تاکہ Data-Axe سسٹم میں ریکارڈ اپ ڈیٹ کر دیا جائے۔</p>
+                <p><strong>حفاظت:</strong> یہ کارڈ اسکول بیگ میں یا گلے میں لازمی موجود ہونا چاہیے۔</p>
+            </div>
+
+            <!-- New Usage & Benefits Box -->
+            <div class="urdu-box teal-box">
+                <h3>مقاصد اور فوائد</h3>
+                <p><strong>ایکسیڈنٹ یا ایمرجنسی:</strong> کسی بھی حادثے کی صورت میں، ریسکیو ٹیم یا پولیس اس کارڈ کو سکین کر کے بچے کی فوری شناخت کر سکتی ہے اور والدین کو کال/واٹس ایپ سے مطلع کر سکتی ہے۔</p>
+                <p><strong>بلڈ گروپ کی فوری دستیابی:</strong> اگر بچے کو خون کی ضرورت پڑ جائے، تو اس کارڈ سے بلڈ گروپ کا فوری پتہ چل جائے گا، جس سے قیمتی وقت کی بچت ہوگی۔</p>
+                <p><strong>بھٹکے ہوئے بچے کی شناخت:</strong> اگر بچہ کسی میلے، بازار یا ہجوم میں کھو جائے، تو کوئی بھی شخص اس QR کو سکین کر کے والدين تک فوری رابطہ کر سکتا ہے۔</p>
+                <p><strong>لوکیشن شیئرنگ:</strong> لوکیشن والے بٹن سے بچے کی موجودہ جگہ کا نقشہ (Google Map) براہ راست والدین کے واٹس ایپ پر بھیج دیا جاتا ہے۔</p>
+                <p><strong>اسکول کی ذمہ داری:</strong> یہ کارڈ اسکول انتظامیہ کی بچوں کی حفاظت کے تئیں پیشہ ورانہ ذمہ داری کا ثبوت ہے۔</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Admin FAB -->
+    <button class="fab-admin" id="fabBtn" onclick="handleAdmin()">
+        <i class="fas fa-lock"></i>
+    </button>
+
+    <!-- Admin Login Modal -->
+    <div class="modal-bg" id="loginModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2><i class="fas fa-shield-halved"></i> Admin Access</h2>
+                <button class="modal-close" onclick="closeModals()"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="modal-body pass-form">
+                <p style="font-size: 12px; color: #94a3b8;">اگر آپ اسکول انتظامیہ ہیں تو پاسورڈ درج کریں</p>
+                <input type="password" id="adminPass" maxlength="4" placeholder="••••">
+                <button onclick="verifyAdmin()">Login</button>
+                <div class="pass-error" id="loginError">غلط پاسورڈ!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Edit Modal -->
+    <div class="modal-bg" id="editModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2><i class="fas fa-user-pen"></i> Update Record</h2>
+                <button class="modal-close" onclick="closeModals()"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="upload-area">
+                    <div class="upload-preview" id="imgPreviewBox">
+                        <img id="imgPreview" src="" alt="">
+                        <i class="fas fa-image" id="previewPlaceholder" style="color: #334155; font-size: 20px;"></i>
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" style="display:none;">
+                    <button class="upload-btn" onclick="document.getElementById('photoInput').click()"><i class="fas fa-camera"></i> Photo</button>
+                </div>
+
+                <div class="form-float">
+                    <label>Serial Number (Data-Axe)</label>
+                    <input type="text" id="inputSerialNo" placeholder="SN-1234">
+                </div>
+                <div class="form-float">
+                    <label>Student Name</label>
+                    <input type="text" id="inputStudentName" placeholder="Full Name">
+                </div>
+                <div class="form-float">
+                    <label>Blood Group</label>
+                    <input type="text" id="inputBloodGroup" placeholder="A+, B+, O+...">
+                </div>
+                <div class="form-float">
+                    <label>Emergency Dialer</label>
+                    <input type="tel" id="inputEmergencyDialer" placeholder="0300-1234567">
+                </div>
+                <div class="form-float">
+                    <label>Emergency WhatsApp</label>
+                    <input type="tel" id="inputWhatsappNo" placeholder="0300-1234567">
+                </div>
+                <div class="form-float">
+                    <label>School Address</label>
+                    <input type="text" id="inputSchoolAddress" placeholder="Street, City...">
+                </div>
+                <div class="form-float">
+                    <label>School Number</label>
+                    <input type="tel" id="inputSchoolNo" placeholder="042-1234567">
+                </div>
+
+                <button class="save-btn" onclick="saveData()"><i class="fas fa-floppy-disk"></i> Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASS = "1122";
+        let isAdmin = false;
+
+        // Load Data
+        function loadData() {
+            const defaultData = {
+                serialNo: 'SN-0000', studentName: 'طالب علم', bloodGroup: 'O+',
+                emergencyDialer: '0000-0000000', whatsappNo: '0000-0000000',
+                schoolAddress: 'اسکول کا پتہ', schoolNo: '0000-0000000', photo: ''
+            };
+            let data = JSON.parse(localStorage.getItem('studentData')) || defaultData;
+            if (!localStorage.getItem('studentData')) localStorage.setItem('studentData', JSON.stringify(data));
+
+            // Update UI
+            document.querySelector('[data-field="serialNo"]').innerText = data.serialNo;
+            document.querySelector('[data-field="studentName"]').innerText = data.studentName;
+            document.querySelector('[data-field="bloodGroup"]').innerText = data.bloodGroup;
+            document.querySelector('[data-field="emergencyDialer"]').innerText = data.emergencyDialer;
+            document.querySelector('[data-field="whatsappNo"]').innerText = data.whatsappNo;
+            document.querySelector('[data-field="schoolAddress"]').innerText = data.schoolAddress;
+            document.querySelector('[data-field="schoolNo"]').innerText = data.schoolNo;
+
+            const avatarImg = document.getElementById('avatarImg');
+            const avatarIcon = document.getElementById('avatarIcon');
+            if (data.photo) {
+                avatarImg.src = data.photo;
+                avatarImg.style.display = 'block';
+                avatarIcon.style.display = 'none';
+            } else {
+                avatarImg.style.display = 'none';
+                avatarIcon.style.display = 'block';
+            }
+        }
+
+        // Admin Logic
+        function handleAdmin() {
+            if (isAdmin) {
+                openEditModal();
+            } else {
+                document.getElementById('loginModal').classList.add('active');
+                document.getElementById('adminPass').value = '';
+                document.getElementById('loginError').style.display = 'none';
+            }
+        }
+
+        function verifyAdmin() {
+            if (document.getElementById('adminPass').value === ADMIN_PASS) {
+                isAdmin = true;
+                document.getElementById('loginModal').classList.remove('active');
+                document.getElementById('fabBtn').innerHTML = '<i class="fas fa-pen-to-square"></i>';
+                openEditModal();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function openEditModal() {
+            const data = JSON.parse(localStorage.getItem('studentData'));
+            document.getElementById('inputSerialNo').value = data.serialNo;
+            document.getElementById('inputStudentName').value = data.studentName;
+            document.getElementById('inputBloodGroup').value = data.bloodGroup;
+            document.getElementById('inputEmergencyDialer').value = data.emergencyDialer;
+            document.getElementById('inputWhatsappNo').value = data.whatsappNo;
+            document.getElementById('inputSchoolAddress').value = data.schoolAddress;
+            document.getElementById('inputSchoolNo').value = data.schoolNo;
+
+            const preview = document.getElementById('imgPreview');
+            const placeholder = document.getElementById('previewPlaceholder');
+            if(data.photo) {
+                preview.src = data.photo;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                preview.style.display = 'none';
+                placeholder.style.display = 'block';
+            }
+
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeModals() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        // Photo Upload
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem('tempPhoto', e.target.result);
+                    document.getElementById('imgPreview').src = e.target.result;
+                    document.getElementById('imgPreview').style.display = 'block';
+                    document.getElementById('previewPlaceholder').style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Save Data
+        function saveData() {
+            const data = {
+                serialNo: document.getElementById('inputSerialNo').value,
+                studentName: document.getElementById('inputStudentName').value,
+                bloodGroup: document.getElementById('inputBloodGroup').value,
+                emergencyDialer: document.getElementById('inputEmergencyDialer').value,
+                whatsappNo: document.getElementById('inputWhatsappNo').value,
+                schoolAddress: document.getElementById('inputSchoolAddress').value,
+                schoolNo: document.getElementById('inputSchoolNo').value,
+                photo: localStorage.getItem('tempPhoto') || (JSON.parse(localStorage.getItem('studentData')).photo || '')
+            };
+
+            localStorage.setItem('studentData', JSON.stringify(data));
+            localStorage.removeItem('tempPhoto');
+            loadData();
+            closeModals();
+        }
+
+        // Action Buttons
+        function makeCall() {
+            const data = JSON.parse(localStorage.getItem('studentData'));
+            window.location.href = `tel:${data.emergencyDialer}`;
+        }
+
+        function sendWhatsApp() {
+            const data = JSON.parse(localStorage.getItem('studentData'));
+            const phone = data.whatsappNo.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${phone}`, '_blank');
+        }
+
+        function sendLocation() {
+            const data = JSON.parse(localStorage.getItem('studentData'));
+            const phone = data.whatsappNo.replace(/[^0-9]/g, '');
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const mapsLink = `https://maps.google.com/?q=${lat},${lon}`;
+                    const message = `ہنگامی حالت! بچے کی موجودہ لوکیشن: ${mapsLink}`;
+                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+                }, () => {
+                    alert("لوکیشن حاصل نہیں ہو سکی۔ براہ کرم GPS آن کریں۔");
+                });
+            } else {
+                alert("آپ کا براؤزر لوکیشن سپورٹ نہیں کرتا۔");
+            }
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
