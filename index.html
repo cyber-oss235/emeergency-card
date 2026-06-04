@@ -286,6 +286,7 @@
         .urdu-box.teal-box {
             background: rgba(20, 184, 166, 0.1);
             border: 1px solid rgba(20, 184, 166, 0.3);
+            margin-bottom: 0; /* Removed bottom margin to attach powered by */
         }
 
         .urdu-box h3 {
@@ -312,6 +313,29 @@
 
         .urdu-box strong { color: #fff; }
 
+        /* Powered By Section */
+        .powered-by {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--glass-border);
+            direction: ltr;
+        }
+        .powered-by span {
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .powered-by strong {
+            font-size: 12px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
         /* Modal System */
         .modal-bg {
             display: none;
@@ -334,6 +358,10 @@
             border: 1px solid rgba(255,255,255,0.1);
             overflow: hidden;
             animation: popIn 0.3s ease-out;
+            /* Flex layout to fix save button visibility */
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh; /* Prevents modal from going off-screen */
         }
 
         @keyframes popIn {
@@ -347,12 +375,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0; /* Prevents header from shrinking */
         }
 
         .modal-head h2 { font-size: 16px; font-weight: 600; }
         .modal-close { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
 
-        .modal-body { padding: 20px; }
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto; /* Allows scrolling inside the form */
+            flex-grow: 1;
+        }
 
         .form-float {
             margin-bottom: 15px;
@@ -389,7 +422,7 @@
         }
 
         .save-btn {
-            width: 100%; padding: 14px; background: linear-gradient(to right, var(--accent), #be123c); border: none; color: white; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Poppins'; margin-top: 10px;
+            width: 100%; padding: 14px; background: linear-gradient(to right, var(--accent), #be123c); border: none; color: white; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Poppins'; margin-top: 10px; flex-shrink: 0;
         }
 
         .pass-form { text-align: center; }
@@ -418,7 +451,8 @@
                     <img id="avatarImg" src="" alt="">
                 </div>
                 <div class="student-details">
-                    <h2 data-field="studentName">طالب علم</h2>
+                    <!-- Changed from Urdu to English -->
+                    <h2 data-field="studentName">Student Name</h2>
                     <div class="blood-badge">
                         <i class="fas fa-droplet"></i>
                         <span data-field="bloodGroup">O+</span>
@@ -483,7 +517,7 @@
                 <p><strong>حفاظت:</strong> یہ کارڈ اسکول بیگ میں یا گلے میں لازمی موجود ہونا چاہیے۔</p>
             </div>
 
-            <!-- New Usage & Benefits Box -->
+            <!-- Usage & Benefits Box -->
             <div class="urdu-box teal-box">
                 <h3>مقاصد اور فوائد</h3>
                 <p><strong>ایکسیڈنٹ یا ایمرجنسی:</strong> کسی بھی حادثے کی صورت میں، ریسکیو ٹیم یا پولیس اس کارڈ کو سکین کر کے بچے کی فوری شناخت کر سکتی ہے اور والدین کو کال/واٹس ایپ سے مطلع کر سکتی ہے۔</p>
@@ -491,6 +525,12 @@
                 <p><strong>بھٹکے ہوئے بچے کی شناخت:</strong> اگر بچہ کسی میلے، بازار یا ہجوم میں کھو جائے، تو کوئی بھی شخص اس QR کو سکین کر کے والدين تک فوری رابطہ کر سکتا ہے۔</p>
                 <p><strong>لوکیشن شیئرنگ:</strong> لوکیشن والے بٹن سے بچے کی موجودہ جگہ کا نقشہ (Google Map) براہ راست والدین کے واٹس ایپ پر بھیج دیا جاتا ہے۔</p>
                 <p><strong>اسکول کی ذمہ داری:</strong> یہ کارڈ اسکول انتظامیہ کی بچوں کی حفاظت کے تئیں پیشہ ورانہ ذمہ داری کا ثبوت ہے۔</p>
+            </div>
+
+            <!-- Powered By -->
+            <div class="powered-by">
+                <span>Powered By</span><br>
+                <strong><i class="fas fa-database" style="margin-right: 3px;"></i> Data-Axe</strong>
             </div>
 
         </div>
@@ -576,7 +616,7 @@
         // Load Data
         function loadData() {
             const defaultData = {
-                serialNo: 'SN-0000', studentName: 'طالب علم', bloodGroup: 'O+',
+                serialNo: 'SN-0000', studentName: 'Student Name', bloodGroup: 'O+',
                 emergencyDialer: '0000-0000000', whatsappNo: '0000-0000000',
                 schoolAddress: 'اسکول کا پتہ', schoolNo: '0000-0000000', photo: ''
             };
