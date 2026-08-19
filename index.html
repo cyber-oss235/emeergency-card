@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Data-Axe ہنگامی کارڈ</title>
+
+    <!-- PWA Primary Meta Tags -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Data-Axe Card">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --primary: #6366f1; /* Indigo */
@@ -16,6 +25,8 @@
             --glass-border: rgba(255, 255, 255, 0.2);
             --text-light: #f8fafc;
             --text-dim: #94a3b8;
+            --verified-blue: #38bdf8;
+            --rescue-red: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,8 +44,32 @@
             align-items: center;
             justify-content: center;
             padding: 15px;
-            padding-bottom: 80px; /* Space for FAB */
+            padding-bottom: 80px;
             overflow-x: hidden;
+        }
+
+        /* Verification Status Banner */
+        .verifying-banner {
+            display: none;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            animation: pulseBanner 1.5s infinite;
+            direction: ltr;
+        }
+
+        @keyframes pulseBanner {
+            0% { opacity: 0.8; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.8; transform: scale(0.98); }
         }
 
         /* Floating Action Button for Admin */
@@ -82,7 +117,7 @@
             width: 200%;
             height: 200%;
             background: linear-gradient(45deg, transparent, transparent, transparent, rgba(255,255,255,0.1), transparent, transparent);
-            animation: hologram 6s linear infinite;
+            animation: hologram 10s linear infinite;
             z-index: 1;
             pointer-events: none;
         }
@@ -91,8 +126,37 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Company Title Banner Styling */
+        .company-header {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+            z-index: 2;
+        }
+
+        .company-header span {
+            font-size: 11px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .company-header h2 {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #fff;
+            text-transform: uppercase;
+            margin-top: 2px;
+            text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
         .card-top {
-            padding: 25px 20px 15px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -102,7 +166,7 @@
         }
 
         .school-info h1 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -168,11 +232,57 @@
             flex: 1;
         }
 
+        .name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
         .student-details h2 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 8px;
+        }
+
+        /* Professional Verification Badge */
+        .verify-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            transition: all 0.5s ease;
+            text-transform: uppercase;
+        }
+
+        /* Light OFF / Unverified State */
+        .verify-badge.off {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+        }
+        .verify-badge.off i {
+            color: #64748b;
+        }
+
+        /* Light ON / Verified State */
+        .verify-badge.on {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            color: var(--verified-blue);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+        }
+        .verify-badge.on i {
+            color: var(--verified-blue);
+            animation: glowCheck 2s infinite alternate;
+        }
+
+        @keyframes glowCheck {
+            from { text-shadow: 0 0 2px var(--verified-blue); }
+            to { text-shadow: 0 0 8px var(--verified-blue); }
         }
 
         .blood-badge {
@@ -195,7 +305,7 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .data-row {
@@ -208,11 +318,19 @@
             border-left: 3px solid var(--primary);
         }
 
+        .data-row.validity-row {
+            border-left: 3px solid #f59e0b;
+        }
+
         .data-row i {
             font-size: 16px;
             width: 25px;
             text-align: center;
             color: var(--primary);
+        }
+
+        .data-row.validity-row i {
+            color: #f59e0b;
         }
 
         .data-row .info {
@@ -240,7 +358,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .act-btn {
@@ -259,7 +377,6 @@
         }
 
         .act-btn:active { transform: scale(0.95); }
-        
         .act-btn i { font-size: 18px; margin-bottom: 5px; }
         .act-btn span { font-size: 10px; font-weight: 500; }
 
@@ -271,6 +388,72 @@
         
         .act-btn.loc { border-color: rgba(99, 102, 241, 0.5); color: #a5b4fc; }
         .act-btn.loc i { color: var(--primary); }
+
+        /* Speed Dial Emergency Hotlines Box */
+        .speed-dial-box {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .speed-dial-title {
+            font-size: 11px;
+            color: #fca5a5;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .speed-dial-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .sd-btn {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            border-radius: 12px;
+            padding: 10px 4px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .sd-btn:active {
+            transform: scale(0.92);
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .sd-btn i {
+            font-size: 15px;
+            color: #f43f5e;
+        }
+
+        .sd-btn .sd-num {
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .sd-btn .sd-label {
+            font-size: 9px;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
 
         /* Urdu Info Boxes */
         .urdu-box {
@@ -286,7 +469,19 @@
         .urdu-box.teal-box {
             background: rgba(20, 184, 166, 0.1);
             border: 1px solid rgba(20, 184, 166, 0.3);
-            margin-bottom: 0; /* Removed bottom margin to attach powered by */
+            margin-bottom: 15px;
+        }
+
+        .urdu-box.rose-box {
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .urdu-box.purple-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            margin-bottom: 15px;
         }
 
         .urdu-box h3 {
@@ -294,11 +489,15 @@
             font-size: 18px;
             margin-bottom: 12px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .urdu-box.teal-box h3 {
-            color: #2dd4bf;
-        }
+        .urdu-box.teal-box h3 { color: #2dd4bf; }
+        .urdu-box.rose-box h3 { color: #fda4af; }
+        .urdu-box.purple-box h3 { color: #c084fc; }
 
         .urdu-box p {
             color: #fde68a;
@@ -307,11 +506,43 @@
             margin-bottom: 8px;
         }
 
-        .urdu-box.teal-box p {
-            color: #99f6e4;
-        }
+        .urdu-box.teal-box p { color: #99f6e4; }
+        .urdu-box.rose-box p { color: #fecdd3; }
+        .urdu-box.purple-box p { color: #e9d5ff; }
 
         .urdu-box strong { color: #fff; }
+
+        /* Highlight Privacy Policy Button */
+        .privacy-btn-container {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .privacy-highlight-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #f43f5e, #8b5cf6);
+            border: none;
+            border-radius: 15px;
+            padding: 14px 20px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.7); }
+            100% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
+        }
 
         /* Powered By Section */
         .powered-by {
@@ -358,10 +589,9 @@
             border: 1px solid rgba(255,255,255,0.1);
             overflow: hidden;
             animation: popIn 0.3s ease-out;
-            /* Flex layout to fix save button visibility */
             display: flex;
             flex-direction: column;
-            max-height: 90vh; /* Prevents modal from going off-screen */
+            max-height: 90vh;
         }
 
         @keyframes popIn {
@@ -375,7 +605,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0; /* Prevents header from shrinking */
+            flex-shrink: 0;
         }
 
         .modal-head h2 { font-size: 16px; font-weight: 600; }
@@ -383,13 +613,11 @@
 
         .modal-body {
             padding: 20px;
-            overflow-y: auto; /* Allows scrolling inside the form */
+            overflow-y: auto;
             flex-grow: 1;
         }
 
-        .form-float {
-            margin-bottom: 15px;
-        }
+        .form-float { margin-bottom: 15px; }
         .form-float label {
             display: block;
             font-size: 11px;
@@ -406,7 +634,7 @@
             color: white;
             font-family: 'Poppins', sans-serif;
             direction: ltr;
-            text-align: right;
+            text-align: left;
         }
         .form-float input:focus { outline: none; border-color: var(--primary); }
 
@@ -430,15 +658,90 @@
         .pass-form button { background: var(--primary); color: white; padding: 12px 30px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: 'Poppins'; width: 100%; }
         .pass-error { color: var(--accent); font-size: 12px; margin-top: 10px; display: none; }
 
+        /* Privacy Policy Modal Styling */
+        .policy-content-eng {
+            direction: ltr;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .policy-content-eng h4 {
+            color: #f43f5e;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .policy-content-urdu {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 12px;
+            line-height: 2.2;
+            color: #fde68a;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .policy-content-urdu h4 {
+            color: #fbbf24;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .contact-info-block {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+        .contact-info-block h5 {
+            color: #2dd4bf;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .contact-info-block p {
+            font-size: 12px;
+            color: #f8fafc;
+            margin-bottom: 5px;
+            direction: ltr;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .contact-info-block p i {
+            color: var(--primary);
+            width: 16px;
+        }
+        .contact-info-block p a {
+            color: #a5b4fc;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Verifying Loader Banner -->
+    <div class="verifying-banner" id="verifyingBanner">
+        <i class="fas fa-spinner fa-spin" style="margin-right: 6px;"></i> Please wait, verifying...
+    </div>
+
     <!-- Main Card App -->
     <div class="id-card">
+
+        <!-- Company / Title Header Box -->
+        <div class="company-header" id="companyBox">
+            <span>EMPLOYEE / MEMBER</span>
+            <h2 data-field="companyName">COMPANY NAME</h2>
+        </div>
+
         <div class="card-top">
             <div class="school-info">
-                <h1>Oxford High School</h1>
+                <h1>Emergency Profile</h1>
             </div>
             <div class="serial-chip" data-field="serialNo">SN-0000</div>
         </div>
@@ -451,8 +754,14 @@
                     <img id="avatarImg" src="" alt="">
                 </div>
                 <div class="student-details">
-                    <!-- Changed from Urdu to English -->
-                    <h2 data-field="studentName">Student Name</h2>
+                    <div class="name-wrapper">
+                        <h2 data-field="studentName">User Name</h2>
+                        <!-- Verified Badge Element -->
+                        <div class="verify-badge off" id="verifyBadge">
+                            <i class="fas fa-circle-check"></i>
+                            <span id="badgeText">Unverified</span>
+                        </div>
+                    </div>
                     <div class="blood-badge">
                         <i class="fas fa-droplet"></i>
                         <span data-field="bloodGroup">O+</span>
@@ -473,26 +782,34 @@
                     <i class="fab fa-whatsapp"></i>
                     <div class="info">
                         <span>Emergency WhatsApp</span>
-                        <strong data-field="whatsappNo">0000-0000000</strong>
+                        <strong data-field="whatsappNo">0000-*****</strong>
                     </div>
                 </div>
                 <div class="data-row">
-                    <i class="fas fa-school"></i>
+                    <i class="fas fa-location-dot"></i>
                     <div class="info">
-                        <span>School Address</span>
-                        <strong data-field="schoolAddress">پتہ درج کریں</strong>
+                        <span>Home / Office Address</span>
+                        <strong data-field="schoolAddress">Enter Address</strong>
                     </div>
                 </div>
                 <div class="data-row">
                     <i class="fas fa-phone-flip"></i>
                     <div class="info">
-                        <span>School Number</span>
-                        <strong data-field="schoolNo">0000-0000000</strong>
+                        <span>Alternative Number</span>
+                        <strong data-field="schoolNo">0000-****</strong>
+                    </div>
+                </div>
+                <!-- Expiration Date / Valid Till Indicator -->
+                <div class="data-row validity-row">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="info">
+                        <span>Valid Till / Expiration Date</span>
+                        <strong data-field="validTill">December 2026</strong>
                     </div>
                 </div>
             </div>
 
-            <!-- Buttons -->
+            <!-- Action Buttons -->
             <div class="action-grid">
                 <button class="act-btn call" onclick="makeCall()">
                     <i class="fas fa-phone-alt"></i>
@@ -508,23 +825,78 @@
                 </button>
             </div>
 
-            <!-- Urdu Instructions Box -->
+            <!-- Emergency Services Speed Dial Section -->
+            <div class="speed-dial-box">
+                <div class="speed-dial-title">
+                    <i class="fas fa-truck-medical"></i> Emergency Helpline Speed Dial
+                </div>
+                <div class="speed-dial-grid">
+                    <a href="tel:1122" class="sd-btn">
+                        <i class="fas fa-ambulance"></i>
+                        <span class="sd-num">1122</span>
+                        <span class="sd-label">Rescue</span>
+                    </a>
+                    <a href="tel:15" class="sd-btn">
+                        <i class="fas fa-shield-halved"></i>
+                        <span class="sd-num">15</span>
+                        <span class="sd-label">Police</span>
+                    </a>
+                    <a href="tel:130" class="sd-btn">
+                        <i class="fas fa-road"></i>
+                        <span class="sd-num">130</span>
+                        <span class="sd-label">Motorway</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 1. Choking / Heimlich Maneuver Guide -->
+            <div class="urdu-box">
+                <h3><i class="fas fa-person-dots-from-line"></i> گلا گھٹنے پر فوری امداد (Choking)</h3>
+                <p><strong>1. مریض کے پیچھے کھڑے ہوں:</strong> متاثرہ شخص کی کمر کے پیچھے جائیں اور اپنے ہاتھ اس کے پیٹ کے گرد لپیٹیں۔</p>
+                <p><strong>2. مٹھی بنائیں (Heimlich Maneuver):</strong> اپنی ایک مٹھی بنائیں اور اسے ناف (Navel) سے ذرا اوپر رکھیں۔</p>
+                <p><strong>3. اندر اور اوپر زور دیں (Abdominal Thrusts):</strong> مٹھی کو دوسرے ہاتھ سے پکڑ کر تیزی سے اندر اور اوپر کی طرف جھٹکا دیں۔ ایسا تب تک کریں جب تک پھنسی ہوئی شے باہر نہ نکل آئے۔</p>
+            </div>
+
+            <!-- 2. Bleeding Control Guide -->
+            <div class="urdu-box rose-box">
+                <h3><i class="fas fa-bandage"></i> شدید خون بہنے کی صورت میں امداد</h3>
+                <p><strong>1. براہِ راست دباؤ (Direct Pressure):</strong> زخم کے اوپر صاف کپڑا یا گوز (Gauze) رکھ کر ہاتھوں سے مضبوطی سے دبائیں۔</p>
+                <p><strong>2. زخم کو اوپر اٹھائیں (Elevate):</strong> اگر ممکن ہو اور ہڈی نہ ٹوٹی ہو تو متاثرہ عضو کو دل کی سطح سے اوپر رکھیں۔</p>
+                <p><strong>3. پٹی باندھیں (Pressure Bandage):</strong> کپڑے کو ہٹائے بغیر اس کے اوپر مضبوطی سے پٹی باندھیں اور فوراً طبی امداد (1122) طلب کریں۔</p>
+            </div>
+
+            <!-- 3. Burn & Shock Management -->
+            <div class="urdu-box purple-box">
+                <h3><i class="fas fa-fire-extinguisher"></i> جلنے اور برقی جھٹکے پر فوری اقدامات</h3>
+                <p><strong>آگ سے جلنے پر:</strong> جلنے والی جگہ پر فوری طور پر 10 سے 15 منٹ تک ٹھنڈا (بہتا ہوا) پانی ڈالیں۔ برف، ٹوتھ پیسٹ یا مکھن کا استعمال ہرگز نہ کریں۔</p>
+                <p><strong>الیکٹرک شاک (Electric Shock):</strong> متاثرہ شخص کو چھونے سے پہلے مین سوئچ سے بجلی کا کنکشن کاٹیں۔ خشک لکڑی یا پلاسٹک کی مدد سے اسے تار سے الگ کریں۔</p>
+                <p><strong>شاک (Shock) سنبھالنا:</strong> مریض کو سیدھا لٹا دیں، اس کی ٹانگیں تھوڑی اوپر اٹھائیں اور اسے گرم چادر سے ڈھانپ دیں۔</p>
+            </div>
+
+            <!-- Card Usage Instructions -->
             <div class="urdu-box">
                 <h3>ہنگامی کارڈ کے استعمال کا طریقہ</h3>
-                <p><strong>بچے کی حفاظت کے لیے:</strong> یہ کارڈ اسکول کے اوقات یا سفر کے دوران بچے کی شناخت اور حفاظت کا ضامن ہے۔</p>
-                <p><strong>سیریل نمبر کا مقصد:</strong> اس کارڈ کا Serial Number محفوظ ڈیجیٹل سسٹم (Data-Axe) سے جڑا ہوا ہے۔ کسی بھی ہنگامی ضرورت کے وقت اس نمبر سے بچے کی اہم معلومات حاصل کی جا سکتی ہیں۔</p>
-                <p><strong>والدین کے لیے نوٹ:</strong> اگر آپ کا فون نمبر یا گھر کا پتہ تبدیل ہو جائے، تو اسکول انتظامیہ کو فوراً مطلع کریں تاکہ Data-Axe سسٹم میں ریکارڈ اپ ڈیٹ کر دیا جائے۔</p>
-                <p><strong>حفاظت:</strong> یہ کارڈ اسکول بیگ میں یا گلے میں لازمی موجود ہونا چاہیے۔</p>
+                <p><strong>ہر شخص کی حفاظت کے لیے:</strong> یہ کارڈ کسی بھی ہنگامی صورتحال، سفر یا حادثے کے دوران فوری شناخت اور مدد کا ضامن ہے۔</p>
+                <p><strong>سیریل نمبر کا مقصد:</strong> اس کارڈ کا Serial Number محفوظ ڈیجیٹل سسٹم (Data-Axe) سے جڑا ہوا ہے۔ کسی بھی ہنگامی ضرورت کے وقت اس نمبر سے اہم معلومات حاصل کی جا سکتی ہیں۔</p>
+                <p><strong>صارف کے لیے نوٹ:</strong> اگر آپ کا فون نمبر یا گھر کا پتہ تبدیل ہو جائے، تو اس سسٹم میں ریکارڈ فوراً اپ ڈیٹ کر لیں تاکہ بوقتِ ضرورت پریشانی نہ ہو۔</p>
+                <p><strong>حفاظت:</strong> یہ کارڈ یا اس کا لنک آپ کے پاس ہر وقت محفوظ ہونا چاہیے۔</p>
             </div>
 
             <!-- Usage & Benefits Box -->
             <div class="urdu-box teal-box">
                 <h3>مقاصد اور فوائد</h3>
-                <p><strong>ایکسیڈنٹ یا ایمرجنسی:</strong> کسی بھی حادثے کی صورت میں، ریسکیو ٹیم یا پولیس اس کارڈ کو سکین کر کے بچے کی فوری شناخت کر سکتی ہے اور والدین کو کال/واٹس ایپ سے مطلع کر سکتی ہے۔</p>
-                <p><strong>بلڈ گروپ کی فوری دستیابی:</strong> اگر بچے کو خون کی ضرورت پڑ جائے، تو اس کارڈ سے بلڈ گروپ کا فوری پتہ چل جائے گا، جس سے قیمتی وقت کی بچت ہوگی۔</p>
-                <p><strong>بھٹکے ہوئے بچے کی شناخت:</strong> اگر بچہ کسی میلے، بازار یا ہجوم میں کھو جائے، تو کوئی بھی شخص اس QR کو سکین کر کے والدين تک فوری رابطہ کر سکتا ہے۔</p>
-                <p><strong>لوکیشن شیئرنگ:</strong> لوکیشن والے بٹن سے بچے کی موجودہ جگہ کا نقشہ (Google Map) براہ راست والدین کے واٹس ایپ پر بھیج دیا جاتا ہے۔</p>
-                <p><strong>اسکول کی ذمہ داری:</strong> یہ کارڈ اسکول انتظامیہ کی بچوں کی حفاظت کے تئیں پیشہ ورانہ ذمہ داری کا ثبوت ہے۔</p>
+                <p><strong>ایکسیڈنٹ یا ایمرجنسی:</strong> کسی بھی حادثے یا ناگہانی صورتحال میں، ریسکیو ٹیم یا کوئی بھی فرد اس کارڈ کی مدد سے فوری شناخت کر سکتا ہے اور آپ کے پیاروں کو کال یا واٹس ایپ پر مطلع کر سکتا ہے۔</p>
+                <p><strong>فوری ریسکیو ڈائل (1122 / 15):</strong> ہنگامی صورتحال میں بغیر نمبر ٹائپ کیے ایک کلک پر براہِ راست ریسکیو 1122 یا پولیس کو کال ملائی جا سکتی ہے۔</p>
+                <p><strong>بلڈ گروپ کی فوری دستیابی:</strong> اگر خون کی فوری ضرورت پڑ جائے، تو اس کارڈ سے بلڈ گروپ کا فوراً پتہ چل جائے گا، جس سے قیمتی جان بچائی جا سکتی ہے۔</p>
+                <p><strong>گمشدگی کی صورت میں:</strong> اگر کوئی شخص کسی بھی وجہ سے مشکل میں پھنس جائے یا راستہ بھول جائے، تو اس کی مدد کرنا آسان ہو جاتا ہے۔</p>
+                <p><strong>لوکیشن شیئرنگ:</strong> لوکیشن والے بٹن سے آپ کی موجودہ جگہ کا نقشہ (Google Map) براہ راست ایمرجنسی نمبر پر بھیج دیا جاتا ہے۔</p>
+            </div>
+
+            <!-- Privacy Policy Highlight Button -->
+            <div class="privacy-btn-container">
+                <button class="privacy-highlight-btn" onclick="openPrivacyModal()">
+                    <i class="fas fa-shield-alt"></i> Privacy Policy & Data Security
+                </button>
             </div>
 
             <!-- Powered By -->
@@ -549,7 +921,7 @@
                 <button class="modal-close" onclick="closeModals()"><i class="fas fa-xmark"></i></button>
             </div>
             <div class="modal-body pass-form">
-                <p style="font-size: 12px; color: #94a3b8;">اگر آپ اسکول انتظامیہ ہیں تو پاسورڈ درج کریں</p>
+                <p style="font-size: 12px; color: #94a3b8;">ترمیم کرنے کے لیے پاسورڈ درج کریں</p>
                 <input type="password" id="adminPass" maxlength="4" placeholder="••••">
                 <button onclick="verifyAdmin()">Login</button>
                 <div class="pass-error" id="loginError">غلط پاسورڈ!</div>
@@ -576,11 +948,15 @@
                 </div>
 
                 <div class="form-float">
+                    <label>Company / Organization Name</label>
+                    <input type="text" id="inputCompanyName" placeholder="e.g. Data-Axe Solutions">
+                </div>
+                <div class="form-float">
                     <label>Serial Number (Data-Axe)</label>
                     <input type="text" id="inputSerialNo" placeholder="SN-1234">
                 </div>
                 <div class="form-float">
-                    <label>Student Name</label>
+                    <label>Full Name</label>
                     <input type="text" id="inputStudentName" placeholder="Full Name">
                 </div>
                 <div class="form-float">
@@ -589,19 +965,23 @@
                 </div>
                 <div class="form-float">
                     <label>Emergency Dialer</label>
-                    <input type="tel" id="inputEmergencyDialer" placeholder="0300-1234567">
+                    <input type="tel" id="inputEmergencyDialer" placeholder="0300-*******">
                 </div>
                 <div class="form-float">
                     <label>Emergency WhatsApp</label>
-                    <input type="tel" id="inputWhatsappNo" placeholder="0300-1234567">
+                    <input type="tel" id="inputWhatsappNo" placeholder="0300-*******">
                 </div>
                 <div class="form-float">
-                    <label>School Address</label>
+                    <label>Home / Office Address</label>
                     <input type="text" id="inputSchoolAddress" placeholder="Street, City...">
                 </div>
                 <div class="form-float">
-                    <label>School Number</label>
-                    <input type="tel" id="inputSchoolNo" placeholder="042-1234567">
+                    <label>Alternative Number</label>
+                    <input type="tel" id="inputSchoolNo" placeholder="042-*******">
+                </div>
+                <div class="form-float">
+                    <label>Valid Till / Expiration Date</label>
+                    <input type="text" id="inputValidTill" placeholder="e.g. December 2026">
                 </div>
 
                 <button class="save-btn" onclick="saveData()"><i class="fas fa-floppy-disk"></i> Save Changes</button>
@@ -609,28 +989,67 @@
         </div>
     </div>
 
+    <!-- Privacy Policy Modal -->
+    <div class="modal-bg" id="privacyModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2><i class="fas fa-user-shield"></i> Privacy Policy & Security</h2>
+                <button class="modal-close" onclick="closeModals()"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="policy-content-eng">
+                    <h4>Data Protection Pledge</h4>
+                    <p>At Data-Axe, your personal safety and data privacy are our highest priorities. We strictly enforce a <strong>No Data Sell</strong> and <strong>No Data Transfer</strong> policy. Your emergency contact details, blood group, address, and profile information will never be shared, leased, or sold to any external entities.</p>
+                </div>
+                <div class="policy-content-urdu">
+                    <h4>ڈیٹا سیکیورٹی اور پرائیویسی پالیسی</h4>
+                    <p><strong>ڈیٹا رازداری کی ضمانت:</strong> Data-Axe پر آپ کی ذاتی معلومات، بلڈ گروپ اور ہنگامی رابطے مکمل طور پر محفوظ ہیں۔ آپ کا ڈیٹا کسی بھی تیسری پارٹی کو بیچا یا منتقل نہیں کیا جاتا۔</p>
+                </div>
+
+                <!-- For More Info Section -->
+                <div class="contact-info-block">
+                    <h5>For More Info / مزید معلومات کے لیے:</h5>
+                    <p><i class="fas fa-globe"></i> <a href="http://www.dataaxe.info" target="_blank">www.dataaxe.info</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:dataaxeinfo@gmail.com">dataaxeinfo@gmail.com</a></p>
+                    <p><i class="fas fa-phone"></i> <a href="tel:+923036360008">+92 303 6360008</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const ADMIN_PASS = "1122";
+        // Updated Admin Password
+        const ADMIN_PASS = "1234";
         let isAdmin = false;
 
         // Load Data
         function loadData() {
             const defaultData = {
-                serialNo: 'SN-0000', studentName: 'Student Name', bloodGroup: 'O+',
-                emergencyDialer: '0000-0000000', whatsappNo: '0000-0000000',
-                schoolAddress: 'اسکول کا پتہ', schoolNo: '0000-0000000', photo: ''
+                companyName: 'Company Name',
+                serialNo: 'SN-0001', 
+                studentName: 'Full Name', 
+                bloodGroup: 'O+',
+                emergencyDialer: '', 
+                whatsappNo: '',
+                schoolAddress: 'پتہ درج کریں', 
+                schoolNo: '', 
+                validTill: 'December 2026',
+                photo: '',
+                isVerified: false
             };
             let data = JSON.parse(localStorage.getItem('studentData')) || defaultData;
             if (!localStorage.getItem('studentData')) localStorage.setItem('studentData', JSON.stringify(data));
 
             // Update UI
+            document.querySelector('[data-field="companyName"]').innerText = data.companyName || 'Company Name';
             document.querySelector('[data-field="serialNo"]').innerText = data.serialNo;
             document.querySelector('[data-field="studentName"]').innerText = data.studentName;
             document.querySelector('[data-field="bloodGroup"]').innerText = data.bloodGroup;
-            document.querySelector('[data-field="emergencyDialer"]').innerText = data.emergencyDialer;
-            document.querySelector('[data-field="whatsappNo"]').innerText = data.whatsappNo;
+            document.querySelector('[data-field="emergencyDialer"]').innerText = data.emergencyDialer || '0000-0000000';
+            document.querySelector('[data-field="whatsappNo"]').innerText = data.whatsappNo || '0000-0000000';
             document.querySelector('[data-field="schoolAddress"]').innerText = data.schoolAddress;
-            document.querySelector('[data-field="schoolNo"]').innerText = data.schoolNo;
+            document.querySelector('[data-field="schoolNo"]').innerText = data.schoolNo || '0000-0000000';
+            document.querySelector('[data-field="validTill"]').innerText = data.validTill || 'December 2026';
 
             const avatarImg = document.getElementById('avatarImg');
             const avatarIcon = document.getElementById('avatarIcon');
@@ -641,6 +1060,22 @@
             } else {
                 avatarImg.style.display = 'none';
                 avatarIcon.style.display = 'block';
+            }
+
+            // Set Verification Badge Status
+            updateBadgeUI(data.isVerified);
+        }
+
+        // Helper to Toggle Badge UI Light State
+        function updateBadgeUI(isVerified) {
+            const badge = document.getElementById('verifyBadge');
+            const badgeText = document.getElementById('badgeText');
+            if (isVerified) {
+                badge.className = 'verify-badge on';
+                badgeText.innerText = 'Verified';
+            } else {
+                badge.className = 'verify-badge off';
+                badgeText.innerText = 'Unverified';
             }
         }
 
@@ -668,13 +1103,16 @@
 
         function openEditModal() {
             const data = JSON.parse(localStorage.getItem('studentData'));
-            document.getElementById('inputSerialNo').value = data.serialNo;
-            document.getElementById('inputStudentName').value = data.studentName;
-            document.getElementById('inputBloodGroup').value = data.bloodGroup;
-            document.getElementById('inputEmergencyDialer').value = data.emergencyDialer;
-            document.getElementById('inputWhatsappNo').value = data.whatsappNo;
-            document.getElementById('inputSchoolAddress').value = data.schoolAddress;
-            document.getElementById('inputSchoolNo').value = data.schoolNo;
+            
+            document.getElementById('inputCompanyName').value = data.companyName === 'Company Name' ? '' : data.companyName;
+            document.getElementById('inputSerialNo').value = (data.serialNo === 'SN-0000' || data.serialNo === 'SN-0001') ? '' : data.serialNo;
+            document.getElementById('inputStudentName').value = data.studentName === 'Full Name' ? '' : data.studentName;
+            document.getElementById('inputBloodGroup').value = data.bloodGroup === 'O+' ? '' : data.bloodGroup;
+            document.getElementById('inputEmergencyDialer').value = (data.emergencyDialer === '0000-0000000' || !data.emergencyDialer) ? '' : data.emergencyDialer;
+            document.getElementById('inputWhatsappNo').value = (data.whatsappNo === '0000-0000000' || !data.whatsappNo) ? '' : data.whatsappNo;
+            document.getElementById('inputSchoolAddress').value = data.schoolAddress === 'پتہ درج کریں' ? '' : data.schoolAddress;
+            document.getElementById('inputSchoolNo').value = (data.schoolNo === '0000-0000000' || !data.schoolNo) ? '' : data.schoolNo;
+            document.getElementById('inputValidTill').value = data.validTill || '';
 
             const preview = document.getElementById('imgPreview');
             const placeholder = document.getElementById('previewPlaceholder');
@@ -690,9 +1128,15 @@
             document.getElementById('editModal').classList.add('active');
         }
 
+        // Modal Handlers
+        function openPrivacyModal() {
+            document.getElementById('privacyModal').classList.add('active');
+        }
+
         function closeModals() {
             document.getElementById('loginModal').classList.remove('active');
             document.getElementById('editModal').classList.remove('active');
+            document.getElementById('privacyModal').classList.remove('active');
         }
 
         // Photo Upload
@@ -710,23 +1154,50 @@
             }
         });
 
-        // Save Data
+        // Save Data with Auto Verification Timer
         function saveData() {
+            const nameVal = document.getElementById('inputStudentName').value.trim();
+            const companyVal = document.getElementById('inputCompanyName').value.trim();
+            
+            // Checking if form is filled or empty
+            const isFilled = (nameVal !== '' && companyVal !== '');
+
             const data = {
-                serialNo: document.getElementById('inputSerialNo').value,
-                studentName: document.getElementById('inputStudentName').value,
-                bloodGroup: document.getElementById('inputBloodGroup').value,
-                emergencyDialer: document.getElementById('inputEmergencyDialer').value,
-                whatsappNo: document.getElementById('inputWhatsappNo').value,
-                schoolAddress: document.getElementById('inputSchoolAddress').value,
-                schoolNo: document.getElementById('inputSchoolNo').value,
-                photo: localStorage.getItem('tempPhoto') || (JSON.parse(localStorage.getItem('studentData')).photo || '')
+                companyName: companyVal || 'Company Name',
+                serialNo: document.getElementById('inputSerialNo').value || 'SN-0001',
+                studentName: nameVal || 'Full Name',
+                bloodGroup: document.getElementById('inputBloodGroup').value || 'O+',
+                emergencyDialer: document.getElementById('inputEmergencyDialer').value || '0000-0000000',
+                whatsappNo: document.getElementById('inputWhatsappNo').value || '0000-0000000',
+                schoolAddress: document.getElementById('inputSchoolAddress').value || 'پتہ درج کریں',
+                schoolNo: document.getElementById('inputSchoolNo').value || '0000-0000000',
+                validTill: document.getElementById('inputValidTill').value || 'December 2026',
+                photo: localStorage.getItem('tempPhoto') || (JSON.parse(localStorage.getItem('studentData')).photo || ''),
+                isVerified: false // Reset initially during verification
             };
 
             localStorage.setItem('studentData', JSON.stringify(data));
             localStorage.removeItem('tempPhoto');
+
             loadData();
             closeModals();
+
+            // If form was filled, start 5 Seconds Verification process
+            if (isFilled) {
+                const banner = document.getElementById('verifyingBanner');
+                banner.style.display = 'block';
+                updateBadgeUI(false);
+
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                    data.isVerified = true;
+                    localStorage.setItem('studentData', JSON.stringify(data));
+                    updateBadgeUI(true);
+                }, 5000);
+            } else {
+                // If empty form saved, keep light OFF
+                updateBadgeUI(false);
+            }
         }
 
         // Action Buttons
@@ -750,7 +1221,7 @@
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
                     const mapsLink = `https://maps.google.com/?q=${lat},${lon}`;
-                    const message = `ہنگامی حالت! بچے کی موجودہ لوکیشن: ${mapsLink}`;
+                    const message = `ہنگامی حالت! موجودہ لوکیشن: ${mapsLink}`;
                     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
                 }, () => {
                     alert("لوکیشن حاصل نہیں ہو سکی۔ براہ کرم GPS آن کریں۔");
@@ -760,8 +1231,38 @@
             }
         }
 
-        // Initialize
+        // Initialize App
         loadData();
+
+        // Inline Service Worker & PWA Support
+        (function initPWA() {
+            const manifestData = {
+                name: "Data-Axe Emergency Card",
+                short_name: "EmergencyCard",
+                start_url: window.location.href,
+                display: "standalone",
+                background_color: "#0f172a",
+                theme_color: "#0f172a"
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+            const linkElem = document.createElement('link');
+            linkElem.rel = 'manifest';
+            linkElem.href = URL.createObjectURL(manifestBlob);
+            document.head.appendChild(linkElem);
+
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'data-axe-card-v2';
+                    self.addEventListener('install', (e) => { self.skipWaiting(); });
+                    self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
+                    self.addEventListener('fetch', (e) => {
+                        e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+                    });
+                `;
+                const swBlob = new Blob([swCode], { type: 'text/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
+            }
+        })();
     </script>
 </body>
 </html>
